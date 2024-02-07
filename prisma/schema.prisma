@@ -1,0 +1,67 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Shops {
+  id               Int         @id @default(autoincrement())
+  ownerName        String
+  ownerSurname     String
+  email            String      @unique
+  phoneNumber      String
+  password         String 
+  shopCategory     String
+  companyType      String
+  taxNumber        String      @unique
+  companyLocation  String
+  shopAddress      String
+  shopImageUrl     String?     // Optional shop image URL
+  created_at       DateTime    @default(now()) @db.Timestamptz(6)
+  sale             Sales[]
+  category         Categories? @relation(fields: [categoryId], references: [id])
+  categoryId       Int?
+}
+
+model Sales {
+  id                Int      @id @default(autoincrement())
+  shopId            Int
+  shopName          String
+  saleDescription   String
+  salePercentage    Int      // If sale is percentage-based
+  saleProducts      String[]
+  shopAddress       String
+  saleTimespanDays  String[]
+  saleTimespanHours String
+  saleImageUrl      String
+  created_at        DateTime @default(now()) @db.Timestamptz(6)
+  shops             Shops[]
+}
+
+model ShopRegistrationRequests {
+  id               Int      @id @default(autoincrement())
+  shopId           Int?     // Reference to the Shop model if registration is approved
+  ownerName        String
+  ownerSurname     String
+  email            String   @unique
+  phoneNumber      String
+  shopCategory     String
+  companyType      String
+  taxNumber        String   @unique
+  companyLocation  String
+  shopAddress      String
+  shopImageUrl     String?  // Optional shop image URL
+  created_at       DateTime @default(now()) @db.Timestamptz(6)
+}
+
+model Categories {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  shops     Shops[] // The opposite relation field in the Shops model
+}
