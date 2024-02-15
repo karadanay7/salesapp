@@ -1,8 +1,6 @@
 <template>
-  <div class="bg-white h-full w-full font-index">
+  <div class="h-full w-full font-index">
     <div class="SalesList container mx-auto flex flex-col gap-10">
-      <h1 class="text-red-500 text-7xl font-extrabold text-center">Shops</h1>
-
       <!-- Restaurants section -->
       <div class="Category1">
         <h1 class="text-5xl font-semibold pb-10">Featured Shops</h1>

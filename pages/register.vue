@@ -1,232 +1,235 @@
 <template>
-  <div class="bg-red-50 min-h-screen flex flex-col items-center font-index p-8">
-    <h1 class="text-2xl font-semibold mb-6 text-gray-900">Registration</h1>
+  <Loading v-if="isLoading" />
+  <div class="min-h-screen flex flex-col items-center font-index p-8">
+    <h1 class="text-lg font-semibold">Registration</h1>
 
     <!-- Step 1: Company Information -->
-    <form
-      v-if="currentStep === 1"
-      @submit.prevent="nextStep"
-      class="w-full max-w-md bg-white rounded-md p-4"
+    <UForm
+      :schema="RegisterValidationSchema"
+      :state="formState"
+      class="w-full max-w-3xl rounded-md p-4"
+      @submit="handleFormSubmit"
     >
-      <h1 class="text-center font-semibold pb-2 text-gray-600">
-        Company Informations
-      </h1>
-      <div class="mb-4">
-        <label class="block text-sm font-medium text-gray-600"
-          >Company Name</label
-        >
-        <input
-          v-model="companyName"
-          type="text"
-          class="mt-1 p-2 w-full border rounded-md"
-          required
-        />
-      </div>
-      <div class="mb-4">
-        <label class="block text-sm font-medium text-gray-600"
-          >Company Type</label
-        >
-        <input
-          v-model="companyType"
-          type="text"
-          class="mt-1 p-2 w-full border rounded-md"
-          required
-        />
-      </div>
-      <div class="mb-4">
-        <label class="block text-sm font-medium text-gray-600"
-          >Tax Number</label
-        >
-        <input
-          v-model="taxNumber"
-          type="text"
-          class="mt-1 p-2 w-full border rounded-md"
-          required
-        />
-      </div>
+      <div class="grid grid-cols-2 gap-7">
+        <div class="grid1 flex flex-col gap-2">
+          <UFormGroup label="Name-Surname">
+            <UInput v-model="formState.nameSurname" name="NameSurname" />
+          </UFormGroup>
 
-      <div class="mb-4">
-        <button
-          type="submit"
-          class="bg-blue-500 text-white py-2 px-4 rounded-md"
-        >
-          Next
-        </button>
-      </div>
-    </form>
+          <UFormGroup label="E-mail">
+            <UInput v-model="formState.email" placeholder="E-mail" />
+          </UFormGroup>
 
-    <!-- Step 2: Store Information -->
-    <form
-      v-if="currentStep === 2"
-      @submit.prevent="nextStep"
-      class="w-full max-w-md bg-red-50 rounded-md p-4 border-red-800 border"
-    >
-      <div class="mb-4">
-        <label class="block text-sm font-medium text-gray-600"
-          >Store Name</label
-        >
-        <input
-          v-model="storeName"
-          type="text"
-          class="mt-1 p-2 w-full border rounded-md"
-          required
-        />
-      </div>
-      <div class="mb-4">
-        <label class="block text-sm font-medium text-gray-600"
-          >Store Category</label
-        >
-        <input
-          v-model="storeCategory"
-          type="text"
-          class="mt-1 p-2 w-full border rounded-md"
-          required
-        />
-      </div>
-      <div class="mb-4">
-        <label class="block text-sm font-medium text-gray-600"
-          >Store Address</label
-        >
-        <input
-          v-model="storeAddress"
-          type="text"
-          class="mt-1 p-2 w-full border rounded-md"
-          required
-        />
-      </div>
-      <div class="mb-4">
-        <label class="block text-sm font-medium text-gray-600"
-          >Store Image:</label
-        >
-        <input
-          type="file"
-          @change="previewImage"
-          accept="image/*"
-          class="mt-1 p-2 w-full border rounded-md"
-        />
-      </div>
-      <img
-        v-if="previewSrc"
-        :src="previewSrc"
-        alt="Store Image Preview"
-        class="w-44 h-44"
-        style="width: 10em; height: 10em"
-      />
-      <div class="mb-4">
-        <button
-          type="button"
-          @click="prevStep"
-          class="bg-gray-500 text-white py-2 px-4 rounded-md mr-2"
-        >
-          Back
-        </button>
-        <button
-          type="submit"
-          class="bg-blue-500 text-white py-2 px-4 rounded-md"
-        >
-          Next
-        </button>
-      </div>
-    </form>
+          <UFormGroup label="Company Type">
+            <USelect
+              v-model="companyType"
+              :options="companyTypes"
+              option-attribute="name"
+              placeholder="Company Type"
+            ></USelect>
+          </UFormGroup>
+          <UFormGroup label="ID/TAX Number">
+            <UInput
+              v-model="formState.idTaxNo"
+              type="number"
+              placeholder="ID/TAX number"
+            />
+          </UFormGroup>
+          <UFormGroup label="Company Trade Name ">
+            <UInput
+              v-model="formState.companyName"
+              placeholder="Company Trade Name"
+            />
+          </UFormGroup>
+          <UFormGroup label="City">
+            <USelect
+              @change="loadDistricts"
+              v-model="city"
+              :options="cities"
+              option-attribute="name"
+              value-attribute="id"
+              placeholder="City"
+            ></USelect
+          ></UFormGroup>
+        </div>
+        <div class="grid2 flex flex-col gap-2">
+          <UFormGroup label="District">
+            <USelect
+              v-model="selectedDistrict"
+              :options="districts"
+              option-attribute="name"
+              placeholder="Select District"
+            ></USelect
+          ></UFormGroup>
+          <UFormGroup label="Address Line ">
+            <UInput
+              v-model="formState.addressLine"
+              type="text"
+              placeholder="Address line"
+            />
+          </UFormGroup>
+          <UFormGroup label="Phone">
+            <UInput
+              v-model="formState.phone"
+              type="phone"
+              placeholder="05__ ___ __ __"
+            />
+          </UFormGroup>
 
-    <!-- Step 3: Personal Information -->
-    <form
-      v-if="currentStep === 3"
-      @submit.prevent="signUp"
-      class="w-full max-w-md bg-red-50 rounded-md p-4 border-red-800 border"
-    >
-      <div class="mb-4">
-        <label class="block text-sm font-medium text-gray-600"
-          >Owner's First Name</label
-        >
-        <input
-          v-model="name"
-          type="text"
-          class="mt-1 p-2 w-full border rounded-md"
-          required
-        />
+          <UFormGroup label="Category">
+            <USelect
+              v-model="formState.category"
+              :options="categories"
+              option-attribute="name"
+              placeholder="Select District"
+            ></USelect
+          ></UFormGroup>
+          <UFormGroup label="Password">
+            <UInput
+              v-model="formState.password"
+              type="password"
+              placeholder="Min 6 characters and min 1 number"
+            />
+          </UFormGroup>
+          <UFormGroup label="Confirm Password">
+            <UInput
+              v-model="formState.confirmPassword"
+              type="password"
+              name="password"
+              placeholder="Must be the same as password"
+            />
+          </UFormGroup>
+
+          <!-- Image Upload -->
+        </div>
       </div>
-      <div class="mb-4">
-        <label class="block text-sm font-medium text-gray-600"
-          >Owner's Last Name</label
-        >
-        <input
-          v-model="lastname"
-          type="text"
-          class="mt-1 p-2 w-full border rounded-md"
-          required
-        />
-      </div>
-      <div class="mb-4">
-        <label class="block text-sm font-medium text-gray-600"
-          >Email address</label
-        >
-        <input
-          v-model="email"
-          type="email"
-          class="mt-1 p-2 w-full border rounded-md"
-          required
-        />
-      </div>
-      <div class="mb-4">
-        <label class="block text-sm font-medium text-gray-600">Password</label>
-        <input
-          v-model="password"
-          type="password"
-          class="mt-1 p-2 w-full border rounded-md"
-          required
-        />
-      </div>
-      <div class="mb-4">
-        <button
-          type="button"
-          @click="prevStep"
-          class="bg-gray-500 text-white py-2 px-4 rounded-md mr-2"
-        >
-          Back
-        </button>
-        <button
-          type="submit"
-          :disabled="loading"
-          class="bg-blue-500 text-white py-2 px-4 rounded-md"
-        >
-          <div class="flex items-center" :class="{ 'animate-spin': loading }">
-            Register
+      <div
+        class="relative w-full h-52 border-2 border-dashed flex flex-col justify-center items-center overflow-hidden mt-4"
+      >
+        <div v-if="previewSrc" class="overflow-hidden flex flex-col">
+          <div>
+            <img
+              :src="previewSrc"
+              alt="Image Preview"
+              class="w-full h-full object-contain p-2"
+            />
           </div>
-        </button>
-      </div>
-    </form>
+          <div>
+            <Icon
+              name="fa:close"
+              size="70"
+              class="text-red-500 absolute"
+              @click="handleFileChange"
+            />
+          </div>
+        </div>
+        <div
+          v-else
+          class="flex flex-col justify-center items-center w-full h-full"
+        >
+          <h3 class="text-2xl">Add Store Image</h3>
+          <div>
+            <Icon class="" name="flat-color-icons:add-image" size="70" />
+          </div>
+          <h2 class="text-center text-xl mb-2">
+            Drop the image here, or
+            <span class="text-blue-500 cursor-pointer"> browse </span>
+          </h2>
 
-    <!-- Error Alert -->
-    <ErrorAlert :error-msg="authError" @clearError="clearError" />
+          <input
+            type="file"
+            accept="image/*"
+            @change="previewImage"
+            class="opacity-0 cursor-pointer absolute inset-0 w-full h-full"
+            ref="previewFileInput"
+          />
+        </div>
+      </div>
+      <div class="flex items-center justify-center pt-4">
+        <UButton type="submit" color="primary"> Apply & Get Password </UButton>
+      </div>
+    </UForm>
   </div>
 </template>
 
-<script setup>
-// Import your ErrorAlert component
+<script setup lang="ts">
+import type { FormSubmitEvent } from "#ui/types";
 
-const currentStep = ref(1);
-const companyName = ref("");
+import { RegisterValidationSchema } from "~/schemas/RegisterSchema";
+const supabase = useSupabaseClient();
+
+type Option = {
+  value: string;
+  label: string;
+};
+type District = {
+  area: number;
+  id: number;
+  name: string;
+  population: number;
+  province: string;
+};
+
+type CityResponse = {
+  id: string;
+  districts: District[];
+};
+
+const districts = ref<District[]>([]);
+const cities = ref<CityResponse[]>([]);
+const previewSrc = ref<string | ArrayBuffer | null>(null);
+const isLoading = ref(false);
+const files = ref<FileList | null>(null);
+const latestPath = ref("");
 const companyType = ref("");
-const taxNumber = ref("");
-const companyLocation = ref("");
-const storeName = ref("");
-const storeCategory = ref("");
-const storeAddress = ref("");
-const name = ref("");
-const lastname = ref("");
-const email = ref("");
-const password = ref("");
-const loading = ref(false);
-const authError = ref("");
-const previewSrc = ref("");
-const files = ref(null);
-const companyAddressLine1 = ref("");
-const companyAddressLine2 = ref("");
-const companyCity = ref("");
-const companyStateProvince = ref("");
-const companyCountry = ref("");
-const companyzipCode = ref("");
+const city = ref("");
+const selectedDistrict = ref("");
+const formState = reactive({
+  nameSurname: undefined,
+  companyName: undefined,
+
+  addressLine: undefined,
+  email: undefined,
+  category: undefined,
+  idTaxNo: undefined,
+
+  password: undefined,
+  confirmPassword: undefined,
+  phone: undefined,
+});
+
+const citiesResponse = await useFetch<{ data: (typeof Option)[] }>(
+  "https://turkiyeapi.dev/api/v1/provinces"
+);
+if (citiesResponse.data.value) {
+  cities.value = citiesResponse.data.value.data as unknown as CityResponse[];
+}
+
+const loadDistricts = async (evt: { target: { _value: any } }) => {
+  if (city) {
+    const districtsResponse: Awaited<{
+      data: {
+        value: {
+          data: {
+            districts: District[];
+          };
+        };
+      };
+    }> = await useFetch(
+      `https://turkiyeapi.dev/api/v1/provinces/${evt.target._value}`
+    );
+
+    if (districtsResponse.data && districtsResponse.data.value) {
+      districts.value = districtsResponse.data?.value?.data?.districts ?? [];
+    } else {
+      console.error("Invalid districts response:", districtsResponse);
+    }
+  } else {
+    // Reset districts if no city is selected
+    districts.value = [];
+    // Change here
+  }
+};
 
 watchEffect(async () => {
   // Check if the user is already authenticated, if yes, redirect to home
@@ -234,20 +237,36 @@ watchEffect(async () => {
     await navigateTo("/");
   }
 });
+const companyTypes = [
+  { id: 1, name: "Incorporated" },
+  { id: 2, name: "Limited" },
+  { id: 3, name: "Sole Proprietorship" },
+  { id: 4, name: "Other" },
+];
 
-const nextStep = () => {
-  if (currentStep.value < 3) {
-    currentStep.value++;
-  }
-};
-
-const prevStep = () => {
-  if (currentStep.value > 1) {
-    currentStep.value--;
-  }
-};
-
-const previewImage = (evt) => {
+const categories = [
+  { id: 1, name: "Clothing" },
+  { id: 2, name: "Electronics" },
+  { id: 3, name: "Home and Furniture" },
+  { id: 4, name: "Books and Stationery" },
+  { id: 5, name: "Sports and Outdoors" },
+  { id: 6, name: "Coffee Shops" },
+  { id: 7, name: "Restaurants" },
+  { id: 8, name: "Spa & Massage" },
+  { id: 9, name: "Beauty" },
+  { id: 10, name: "Grocery Stores" },
+  { id: 11, name: "Toys and Games" },
+  { id: 12, name: "Jewelry and Accessories" },
+  { id: 13, name: "Automotive" },
+  { id: 14, name: "Pet Supplies" },
+  { id: 15, name: "Tech and Gadgets" },
+  { id: 16, name: "Health and Fitness" },
+  { id: 17, name: "Music and Instruments" },
+  { id: 18, name: "Arts and Crafts" },
+  { id: 19, name: "Baby and Kids" },
+  { id: 20, name: "Footwear" },
+];
+const previewImage = (evt: { target: { files: FileList } }) => {
   const file = evt.target.files[0];
   if (file) {
     const reader = new FileReader();
@@ -255,63 +274,55 @@ const previewImage = (evt) => {
       previewSrc.value = reader.result;
     };
     reader.readAsDataURL(file);
-    files.value = [file];
+    files.value = evt.target.files; // Assign files.value here
   }
 };
 
-const signUp = async () => {
-  loading.value = true;
-
+const handleFileChange = () => {
+  previewSrc.value = null; // Reset previewSrc
+};
+const uploadImage = async (evt: { target: { files: FileList } }) => {
   try {
-    let imageUrl = null;
-
-    if (files.value && files.value.length > 0) {
-      const file = files.value[0];
-      const fileExt = file.name.split(".").pop();
-      const fileName = `${Math.random()}.${fileExt}`;
-      const filePath = `images/${fileName}`;
-
-      const { error: uploadError, data: response } = await supabase.storage
-        .from("butik1")
-        .upload(filePath, file);
-
-      if (uploadError) throw uploadError;
-
-      imageUrl = response?.path.toString();
+    // Ensure files.value is not null
+    if (!files.value) {
+      throw new Error("No file selected");
     }
 
-    const { error } = await client.auth.signUp({
-      email: email.value,
-      password: password.value,
-      options: {
-        data: {
-          first_name: name.value,
-          last_name: lastname.value,
-          company: companyName.value,
-          company_type: companyType.value,
-          tax_number: taxNumber.value,
-          company_location: companyLocation.value,
-          shop_name: storeName.value,
-          shop_category: storeCategory.value,
-          shop_address: storeAddress.value,
-          shop_image_url: imageUrl,
-        },
-      },
-    });
-
-    if (error) {
-      throw error;
+    const file = files.value[0];
+    if (!file) {
+      throw new Error("Invalid file");
     }
 
-    // ... rest of your success handling code ...
+    const fileExt = file.name.split(".").pop();
+    const fileName = `${Math.random()}.${fileExt}`;
+    const filePath = `images/${fileName}`;
+
+    const { data: response, error: uploadError } = await supabase.storage
+      .from("SaleSpot")
+      .upload(filePath, file);
+
+    if (uploadError) {
+      throw new Error(uploadError.message);
+    }
+
+    // Ensure response has a path property
+    if (response?.path) {
+      latestPath.value = response.path.toString(); // Assigning the latest path
+      console.log(response);
+    } else {
+      throw new Error("Uploaded file path not found");
+    }
   } catch (error) {
-    loading.value = false;
-    authError.value = "Failed to register";
-    console.error(error);
+    alert(error.message);
+    console.log();
   }
 };
 
-const clearError = () => {
-  authError.value = "";
-};
+// Return true if there are no errors, false otherwise
+
+function handleFormSubmit(event: FormSubmitEvent<RegisterValidationSchema>) {
+  // Do something with data
+  console.log(event.data);
+}
+// Function to check if passwords match
 </script>

@@ -1,12 +1,10 @@
 <template>
-  <div class="bg-white h-full w-full font-index">
+  <div class="h-full w-full font-index">
     <div class="SalesList container mx-auto flex flex-col gap-10">
-      <h1 class="text-red-500 text-7xl font-extrabold text-start">Sales</h1>
-
       <!-- Restaurants section -->
       <!-- Scrollable container for restaurant sales boxes -->
       <div v-for="(category, i) in categoryList">
-        <h1 class="text-5xl font-bold w-full mb-4">
+        <h1 class="text-2xl font-bold w-full mb-4">
           {{ category }}
         </h1>
         <ul class="flex gap-4 overflow-x-auto max-w-full">

@@ -2,13 +2,13 @@
   <div class="Main flex flex-col">
     <!-- navbar  -->
     <div
-      class="Navbar flex-1 w-full border-b flex items-center justify-center bg-white font-index font-semibold"
+      class="Navbar flex-1 w-full border-b flex items-center justify-center font-index font-semibold"
     >
       <div class="flex items-center justify-between px-4 md:px-8 py-2">
         <div class="flex items-center">
           <nuxt-link to="/">
             <NuxtImg
-              src="/Sale.png"
+              src="/Logo.png"
               alt="Logo"
               format="webp"
               class="h-10 md:h-12 pr-4"
@@ -62,6 +62,15 @@
               <Icon name="mdi:chevron-down" size="25"
             /></nuxt-link>
           </li>
+          <li>
+            <UToggle
+              :model-value="isDarkModeEnabled"
+              @update:model-value="setColorTheme"
+              on-icon="i-twemoji-sun"
+              off-icon="i-ion-moon"
+              size="lg"
+            />
+          </li>
         </ul>
       </div>
       <ul
@@ -108,68 +117,28 @@
       </ul>
     </div>
     <!-- Search bar -->
-    <div class="SearchBar flex-2 w-full bg-white justify-center">
-      <div class="flex justify-center max-w-[1150px] p-4 w-full mx-auto">
-        <div class="max-w-[700px] w-full">
-          <div
-            class="flex items-center border-2 border-red-500 rounded-sm w-full h-10"
-          >
-            <input
-              class="w-full placeholder-gray-400 text-md pl-2 focus:outline-none"
-              placeholder=" Search for product, category or shop "
-              type="text"
-              v-model="searchItem"
-            />
-            <Icon
-              v-if="isSearching"
-              name="eos-icons:loading"
-              size="25"
-              class="mr-2"
-            />
-            <button
-              type="button"
-              class="flex items-center h-[100%] p-1.5 px-2 bg-red-500"
-              id="serach"
-              aria-label="search"
-            >
-              <Icon name="iconamoon:search-bold" size="20" color="#ffffff" />
-            </button>
-          </div>
-
-          <div class="bg-white max-w-[700px] h-auto w-full">
-            <div
-              v-if="items && items.data"
-              v-for="item in items.data"
-              class="p-1"
-            >
-              <NuxtLink
-                :to="`/item/${item.id}`"
-                class="flex items-center justify-center w-full cursor-pointer hover:bg-gray-100"
-              >
-                <div class="flex items-center">
-                  <nuxt-img
-                    class="rounded-md"
-                    width="40"
-                    :src="item.url"
-                    alt="itemlogo"
-                    title="item"
-                  />
-                  <div class="truncate ml-2">{{ item.title }}</div>
-                </div>
-                <div class="truncate">${{ item.price / 100 }}</div>
-              </NuxtLink>
-            </div>
-          </div>
-        </div>
+    <div class="SearchBar flex-2 w-full justify-center items-center">
+      <div class="max-w-[700px] w-full">
+        <UInput
+          color="primary"
+          placeholder="Search for product, category or shop "
+          v-model="searchItem"
+          icon="i-heroicons-magnifying-glass-20-solid"
+        />
       </div>
     </div>
   </div>
 </template>
-<script setup>
+<script setup lang="ts">
 const isMenuOpen = ref(false);
 
-const toggleMenu = () => {
-  isMenuOpen.value = !isMenuOpen.value;
+type Theme = "light" | "dark";
+
+const isDarkModeEnabled = ref<boolean>(false);
+
+const setColorTheme = () => {
+  isDarkModeEnabled.value = !isDarkModeEnabled.value;
+  useColorMode().preference = isDarkModeEnabled.value ? "dark" : "light";
 };
 
 // import { useUserStore } from "~/stores/user";

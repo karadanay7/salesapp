@@ -23,7 +23,6 @@
     "@nuxt/ui": "^2.13.0",
     "@pinia/nuxt": "^0.5.1",
     "@prisma/client": "^5.8.1",
-    "@vee-validate/zod": "^4.12.5",
     "pinia": "^2.1.7",
     "zod": "^3.22.4"
   }

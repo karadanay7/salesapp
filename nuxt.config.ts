@@ -5,10 +5,14 @@ export default defineNuxtConfig({
     "@nuxt/image",
     "@nuxt/ui",
     "@nuxtjs/supabase",
+    "@nuxtjs/color-mode",
     "@pinia/nuxt",
     "@pinia-plugin-persistedstate/nuxt",
   ],
 
+  ui: {
+    global: true,
+  },
   supabase: {
     redirect: false,
   },

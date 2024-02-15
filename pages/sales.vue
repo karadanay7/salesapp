@@ -1,11 +1,9 @@
 <template>
-  <div class="bg-white h-full w-full font-index">
+  <div class="h-full w-full font-index">
     <div class="SalesList container mx-auto flex flex-col gap-10">
-      <h1 class="text-red-500 text-7xl font-extrabold text-center">Sales</h1>
-
       <!-- Restaurants section -->
       <div class="Category1">
-        <h1 class="text-5xl font-semibold pb-10">Featured Sales</h1>
+        <h1 class="text-2xl font-semibold pb-10">Featured Sales</h1>
         <!-- Scrollable container for restaurant sales boxes -->
         <div class="flex overflow-x-auto flex-shrink-0 h-96 w-full">
           <div class="flex gap-4">
@@ -52,7 +50,7 @@
         </div>
       </div>
       <div class="Category2">
-        <h1 class="text-5xl font-semibold pb-10">Sale Categories</h1>
+        <h1 class="text-2xl font-semibold pb-10">Sale Categories</h1>
         <!-- Scrollable container for restaurant sales boxes -->
         <div class="flex overflow-x-auto flex-shrink-0 h-96 w-full">
           <div class="flex gap-4">
@@ -99,7 +97,7 @@
         </div>
       </div>
       <div class="Category3">
-        <h1 class="text-5xl font-semibold pb-10">Location-Based Sales</h1>
+        <h1 class="text-2xl font-semibold pb-10">Location-Based Sales</h1>
         <!-- Scrollable container for restaurant sales boxes -->
         <div class="flex overflow-x-auto flex-shrink-0 h-96 w-full">
           <div class="flex gap-4">
@@ -146,7 +144,7 @@
         </div>
       </div>
       <div class="Category4">
-        <h1 class="text-5xl font-semibold pb-10">Ends Soon!</h1>
+        <h1 class="text-2xl font-semibold pb-10">Ends Soon!</h1>
         <!-- Scrollable container for restaurant sales boxes -->
         <div class="flex overflow-x-auto flex-shrink-0 h-96 w-full">
           <div class="flex gap-4">
@@ -193,7 +191,7 @@
         </div>
       </div>
       <div class="Category5">
-        <h1 class="text-5xl font-semibold pb-10">Discount Percentages</h1>
+        <h1 class="text-2xl font-semibold pb-10">Discount Percentages</h1>
         <!-- Scrollable container for restaurant sales boxes -->
         <div class="flex overflow-x-auto flex-shrink-0 h-96 w-full">
           <div class="flex gap-4">
@@ -240,7 +238,7 @@
         </div>
       </div>
       <div class="Category6">
-        <h1 class="text-5xl font-semibold pb-10">Deal of the Day</h1>
+        <h1 class="text-2xl font-semibold pb-10">Deal of the Day</h1>
         <!-- Scrollable container for restaurant sales boxes -->
         <div class="flex overflow-x-auto flex-shrink-0 h-96 w-full">
           <div class="flex gap-4">
