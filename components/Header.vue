@@ -1,6 +1,6 @@
 <template>
   <UContainer
-    class="w-full flex items-center justify-between border-b border-gray-200 dark:border-gray-800"
+    class="w-full flex items-center justify-between border-b border-gray-200 dark:border-gray-600"
   >
     <div>
       <ULink to="/">
@@ -13,16 +13,31 @@
         />
       </ULink>
     </div>
-    <div>
-      <UHorizontalNavigation :links="links" />
+    <div class="py-2">
+      <UButton @click="toggleMenu()" class="md:hidden">
+        <Icon
+          :name="isMenuOpen ? 'pajamas:close' : 'pajamas:hamburger'"
+          class="w-4 h-4 text-gray-300 dark:text-gray-900"
+        />
+      </UButton>
+    </div>
+
+    <div class="hidden md:flex">
+      <UHorizontalNavigation :links="horizontalLinks" />
+    </div>
+    <div
+      v-if="isMenuOpen"
+      class="flex md:hidden top-8 absolute z-10 mx-auto left-0 right-0 border rounded-lg text-start bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-600 justify-center py-2 items-center"
+    >
+      <UVerticalNavigation :links="verticalLinks" />
     </div>
 
     <div class="flex items-center">
       <UToggle
         :model-value="isDarkModeEnabled"
         @update:model-value="setColorTheme"
-        on-icon="i-twemoji-sun"
-        off-icon="i-ion-moon"
+        on-icon="i-heroicons-moon"
+        off-icon="i-heroicons-sun"
         size="lg"
       />
     </div>
@@ -40,8 +55,7 @@
 </template>
 <script setup lang="ts">
 const isMenuOpen = ref(false);
-
-type Theme = "light" | "dark";
+const toggleMenu = () => (isMenuOpen.value = !isMenuOpen.value);
 
 const isDarkModeEnabled = ref<boolean>(false);
 
@@ -49,7 +63,35 @@ const setColorTheme = () => {
   isDarkModeEnabled.value = !isDarkModeEnabled.value;
   useColorMode().preference = isDarkModeEnabled.value ? "dark" : "light";
 };
-const links = [
+const horizontalLinks = [
+  [
+    {
+      label: "Home",
+      icon: "i-heroicons-home",
+      to: "/",
+    },
+    {
+      label: "Sales",
+      icon: "i-heroicons-arrow-trending-down",
+      to: "/sales",
+    },
+    {
+      label: "Stores",
+      icon: "i-heroicons-building-storefront",
+      to: "/shops",
+    },
+    {
+      label: "Ending Soon!",
+      icon: "i-heroicons-bolt",
+      to: "/ending-soon",
+    },
+    {
+      label: "Register Your Store",
+      to: "/register",
+    },
+  ],
+];
+const verticalLinks = [
   [
     {
       label: "Home",

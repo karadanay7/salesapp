@@ -4,7 +4,7 @@
     <h2 class="text-xl font-semibold">{{ shopName }}</h2>
     <img :src="url" alt="" class="w-full h-1/2 object-cover rounded-md" />
     <p>
-      <span class="font-semibold">Sale:</span>
+      <span class="font-semibold text-indigo-500">Sale:</span>
       {{ saleDescriptionOrPercentage }} for
       {{ saleProducts ? saleProducts.join(", ") : "No products available" }}
     </p>

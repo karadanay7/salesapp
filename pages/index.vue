@@ -1,19 +1,30 @@
 <template>
   <div class="h-full w-full font-index">
-    <div class="SalesList container mx-auto flex flex-col gap-10">
+    <div class="SalesList container mx-auto flex flex-col gap-1 md:gap-5">
       <!-- Restaurants section -->
       <!-- Scrollable container for restaurant sales boxes -->
       <div v-for="(category, i) in categoryList">
-        <h1 class="text-2xl font-bold w-full mb-4">
-          {{ category }}
-        </h1>
-        <ul class="flex gap-4 overflow-x-auto max-w-full">
+        <UBadge size="xl" :ui="{ rounded: 'rounded-full' }" class="ml-2">{{
+          category
+        }}</UBadge>
+
+        <ul class="flex items-stretch gap-4 overflow-x-auto max-w-full py-3">
           <li
             v-for="sale in restaurantSales"
             :key="sale.id"
-            class="SaleBox rounded-lg"
+            class="SaleBox p-2 rounded-lg"
           >
-            <SaleComponent
+            <!-- <SaleComponent
+              :shopName="sale.shopName"
+              :saleDescriptionOrPercentage="sale.saleDescriptionOrPercentage"
+              :saleProducts="sale.saleProducts"
+              :address="sale.address"
+              :saleTimespanDays="sale.saleTimespanDays"
+              :saleTimespanHours="sale.saleTimespanHours"
+              :salesWhere="sale.salesWhere"
+              :url="sale.url"
+            /> -->
+            <SaleC
               :shopName="sale.shopName"
               :saleDescriptionOrPercentage="sale.saleDescriptionOrPercentage"
               :saleProducts="sale.saleProducts"

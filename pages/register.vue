@@ -155,7 +155,6 @@
 <script setup lang="ts">
 import type { FormSubmitEvent } from "#ui/types";
 
-import { RegisterValidationSchema } from "~/schemas/RegisterSchema";
 const supabase = useSupabaseClient();
 
 type Option = {
