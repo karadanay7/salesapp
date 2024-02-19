@@ -23,11 +23,11 @@
             </UButton>
           </div>
           <div><h1>OR</h1></div>
-          <UContainer>
+          <UContainer class="w-60">
             <UForm
               :validate="validate"
               :state="state"
-              class="space-y-4"
+              class="space-y-4 w-full"
               @submit="onSubmit"
             >
               <UFormGroup label="Email" name="email">
