@@ -16,5 +16,8 @@ export default defineNuxtConfig({
   supabase: {
     redirect: false,
   },
+  nitro: {
+    compressPublicAssets: true,
+  },
   css: ["~/assets/style.css"],
 });

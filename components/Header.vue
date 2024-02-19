@@ -33,6 +33,14 @@
     </div>
 
     <div class="flex items-center">
+      <UButton
+        v-if="user"
+        @click="signOut()"
+        class="text-[13px] py-2 px-4 w-full hover:bg-gray-100 hover:text-orange-500"
+      >
+        <Icon name="uil:signout" size="17" class="mb-1" />
+        Sign out
+      </UButton>
       <UToggle
         :model-value="isDarkModeEnabled"
         @update:model-value="setColorTheme"
@@ -54,10 +62,18 @@
   </div>
 </template>
 <script setup lang="ts">
+const supabase = useSupabaseClient();
+const user = useSupabaseUser();
 const isMenuOpen = ref(false);
 const toggleMenu = () => (isMenuOpen.value = !isMenuOpen.value);
 
 const isDarkModeEnabled = ref<boolean>(false);
+const signOut = () => {
+  supabase.auth.signOut();
+  user.value = null;
+
+  return navigateTo("/");
+};
 
 const setColorTheme = () => {
   isDarkModeEnabled.value = !isDarkModeEnabled.value;
@@ -87,7 +103,7 @@ const horizontalLinks = [
     },
     {
       label: "Register Your Store",
-      to: "/register",
+      to: "/auth",
     },
   ],
 ];
@@ -115,7 +131,7 @@ const verticalLinks = [
     },
     {
       label: "Register Your Store",
-      to: "/register",
+      to: "/auth",
     },
   ],
 ];

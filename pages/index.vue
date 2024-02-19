@@ -4,7 +4,7 @@
       <!-- Restaurants section -->
       <!-- Scrollable container for restaurant sales boxes -->
       <div v-for="(category, i) in categoryList">
-        <UBadge size="xl" :ui="{ rounded: 'rounded-full' }" class="ml-2">{{
+        <UBadge size="xl" :ui="{ rounded: 'rounded-lg' }" class="ml-2">{{
           category
         }}</UBadge>
 
@@ -14,16 +14,6 @@
             :key="sale.id"
             class="SaleBox p-2 rounded-lg"
           >
-            <!-- <SaleComponent
-              :shopName="sale.shopName"
-              :saleDescriptionOrPercentage="sale.saleDescriptionOrPercentage"
-              :saleProducts="sale.saleProducts"
-              :address="sale.address"
-              :saleTimespanDays="sale.saleTimespanDays"
-              :saleTimespanHours="sale.saleTimespanHours"
-              :salesWhere="sale.salesWhere"
-              :url="sale.url"
-            /> -->
             <SaleC
               :shopName="sale.shopName"
               :saleDescriptionOrPercentage="sale.saleDescriptionOrPercentage"

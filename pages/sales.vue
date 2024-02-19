@@ -1,296 +1,46 @@
 <template>
   <div class="h-full w-full font-index">
-    <div class="SalesList container mx-auto flex flex-col gap-10">
+    <div class="SalesList container mx-auto flex flex-col gap-1 md:gap-5">
       <!-- Restaurants section -->
-      <div class="Category1">
-        <h1 class="text-2xl font-semibold pb-10">Featured Sales</h1>
-        <!-- Scrollable container for restaurant sales boxes -->
-        <div class="flex overflow-x-auto flex-shrink-0 h-96 w-full">
-          <div class="flex gap-4">
-            <div
-              v-for="sale in restaurantSales"
-              :key="sale.id"
-              class="SaleBox rounded-lg w-80"
-            >
-              <!-- Sale box content goes here -->
-              <h2 class="text-xl font-semibold">{{ sale.shopName }}</h2>
-              <img
-                :src="sale.url"
-                alt=""
-                class="w-full h-1/2 object-cover rounded-md"
-              />
-              <p>
-                <span class="font-semibold">Sale:</span>
-                {{ sale.saleDescriptionOrPercentage }} for
-                {{
-                  sale.saleProducts
-                    ? sale.saleProducts.join(", ")
-                    : "No products available"
-                }}
-              </p>
-              <p>
-                <span class="font-semibold">Address:</span>
-                {{ sale.address.street }},{{ sale.address.city }}
-              </p>
-              <p v-if="sale.saleTimespanDays && sale.saleTimespanHours">
-                <span class="font-semibold">Sale Days:</span>
-                {{ sale.saleTimespanDays.join(", ") }}
-              </p>
+      <!-- Scrollable container for restaurant sales boxes -->
+      <div v-for="(category, i) in salesList">
+        <UBadge size="xl" :ui="{ rounded: 'rounded-lg' }" class="ml-2">{{
+          category
+        }}</UBadge>
 
-              <p v-if="sale.saleTimespanDays && sale.saleTimespanHours">
-                <span class="font-semibold">Sale Hours:</span>
-                {{ sale.saleTimespanHours }}
-              </p>
-              <p>
-                <span class="font-semibold">Sales Where:</span>
-                {{ sale.salesWhere ? sale.salesWhere : "Not specified" }}
-              </p>
-            </div>
-          </div>
-        </div>
+        <ul class="flex items-stretch gap-4 overflow-x-auto max-w-full py-3">
+          <li
+            v-for="sale in restaurantSales"
+            :key="sale.id"
+            class="SaleBox p-2 rounded-lg"
+          >
+            <SaleC
+              :shopName="sale.shopName"
+              :saleDescriptionOrPercentage="sale.saleDescriptionOrPercentage"
+              :saleProducts="sale.saleProducts"
+              :address="sale.address"
+              :saleTimespanDays="sale.saleTimespanDays"
+              :saleTimespanHours="sale.saleTimespanHours"
+              :salesWhere="sale.salesWhere"
+              :url="sale.url"
+            />
+          </li>
+        </ul>
       </div>
-      <div class="Category2">
-        <h1 class="text-2xl font-semibold pb-10">Sale Categories</h1>
-        <!-- Scrollable container for restaurant sales boxes -->
-        <div class="flex overflow-x-auto flex-shrink-0 h-96 w-full">
-          <div class="flex gap-4">
-            <div
-              v-for="sale in restaurantSales"
-              :key="sale.id"
-              class="SaleBox rounded-lg w-80"
-            >
-              <!-- Sale box content goes here -->
-              <h2 class="text-xl font-semibold">{{ sale.shopName }}</h2>
-              <img
-                :src="sale.url"
-                alt=""
-                class="w-full h-1/2 object-cover rounded-md"
-              />
-              <p>
-                <span class="font-semibold">Sale:</span>
-                {{ sale.saleDescriptionOrPercentage }} for
-                {{
-                  sale.saleProducts
-                    ? sale.saleProducts.join(", ")
-                    : "No products available"
-                }}
-              </p>
-              <p>
-                <span class="font-semibold">Address:</span>
-                {{ sale.address.street }},{{ sale.address.city }}
-              </p>
-              <p v-if="sale.saleTimespanDays && sale.saleTimespanHours">
-                <span class="font-semibold">Sale Days:</span>
-                {{ sale.saleTimespanDays.join(", ") }}
-              </p>
-
-              <p v-if="sale.saleTimespanDays && sale.saleTimespanHours">
-                <span class="font-semibold">Sale Hours:</span>
-                {{ sale.saleTimespanHours }}
-              </p>
-              <p>
-                <span class="font-semibold">Sales Where:</span>
-                {{ sale.salesWhere ? sale.salesWhere : "Not specified" }}
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="Category3">
-        <h1 class="text-2xl font-semibold pb-10">Location-Based Sales</h1>
-        <!-- Scrollable container for restaurant sales boxes -->
-        <div class="flex overflow-x-auto flex-shrink-0 h-96 w-full">
-          <div class="flex gap-4">
-            <div
-              v-for="sale in restaurantSales"
-              :key="sale.id"
-              class="SaleBox rounded-lg w-80"
-            >
-              <!-- Sale box content goes here -->
-              <h2 class="text-xl font-semibold">{{ sale.shopName }}</h2>
-              <img
-                :src="sale.url"
-                alt=""
-                class="w-full h-1/2 object-cover rounded-md"
-              />
-              <p>
-                <span class="font-semibold">Sale:</span>
-                {{ sale.saleDescriptionOrPercentage }} for
-                {{
-                  sale.saleProducts
-                    ? sale.saleProducts.join(", ")
-                    : "No products available"
-                }}
-              </p>
-              <p>
-                <span class="font-semibold">Address:</span>
-                {{ sale.address.street }},{{ sale.address.city }}
-              </p>
-              <p v-if="sale.saleTimespanDays && sale.saleTimespanHours">
-                <span class="font-semibold">Sale Days:</span>
-                {{ sale.saleTimespanDays.join(", ") }}
-              </p>
-
-              <p v-if="sale.saleTimespanDays && sale.saleTimespanHours">
-                <span class="font-semibold">Sale Hours:</span>
-                {{ sale.saleTimespanHours }}
-              </p>
-              <p>
-                <span class="font-semibold">Sales Where:</span>
-                {{ sale.salesWhere ? sale.salesWhere : "Not specified" }}
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="Category4">
-        <h1 class="text-2xl font-semibold pb-10">Ends Soon!</h1>
-        <!-- Scrollable container for restaurant sales boxes -->
-        <div class="flex overflow-x-auto flex-shrink-0 h-96 w-full">
-          <div class="flex gap-4">
-            <div
-              v-for="sale in restaurantSales"
-              :key="sale.id"
-              class="SaleBox rounded-lg w-80"
-            >
-              <!-- Sale box content goes here -->
-              <h2 class="text-xl font-semibold">{{ sale.shopName }}</h2>
-              <img
-                :src="sale.url"
-                alt=""
-                class="w-full h-1/2 object-cover rounded-md"
-              />
-              <p>
-                <span class="font-semibold">Sale:</span>
-                {{ sale.saleDescriptionOrPercentage }} for
-                {{
-                  sale.saleProducts
-                    ? sale.saleProducts.join(", ")
-                    : "No products available"
-                }}
-              </p>
-              <p>
-                <span class="font-semibold">Address:</span>
-                {{ sale.address.street }},{{ sale.address.city }}
-              </p>
-              <p v-if="sale.saleTimespanDays && sale.saleTimespanHours">
-                <span class="font-semibold">Sale Days:</span>
-                {{ sale.saleTimespanDays.join(", ") }}
-              </p>
-
-              <p v-if="sale.saleTimespanDays && sale.saleTimespanHours">
-                <span class="font-semibold">Sale Hours:</span>
-                {{ sale.saleTimespanHours }}
-              </p>
-              <p>
-                <span class="font-semibold">Sales Where:</span>
-                {{ sale.salesWhere ? sale.salesWhere : "Not specified" }}
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="Category5">
-        <h1 class="text-2xl font-semibold pb-10">Discount Percentages</h1>
-        <!-- Scrollable container for restaurant sales boxes -->
-        <div class="flex overflow-x-auto flex-shrink-0 h-96 w-full">
-          <div class="flex gap-4">
-            <div
-              v-for="sale in restaurantSales"
-              :key="sale.id"
-              class="SaleBox rounded-lg w-80"
-            >
-              <!-- Sale box content goes here -->
-              <h2 class="text-xl font-semibold">{{ sale.shopName }}</h2>
-              <img
-                :src="sale.url"
-                alt=""
-                class="w-full h-1/2 object-cover rounded-md"
-              />
-              <p>
-                <span class="font-semibold">Sale:</span>
-                {{ sale.saleDescriptionOrPercentage }} for
-                {{
-                  sale.saleProducts
-                    ? sale.saleProducts.join(", ")
-                    : "No products available"
-                }}
-              </p>
-              <p>
-                <span class="font-semibold">Address:</span>
-                {{ sale.address.street }},{{ sale.address.city }}
-              </p>
-              <p v-if="sale.saleTimespanDays && sale.saleTimespanHours">
-                <span class="font-semibold">Sale Days:</span>
-                {{ sale.saleTimespanDays.join(", ") }}
-              </p>
-
-              <p v-if="sale.saleTimespanDays && sale.saleTimespanHours">
-                <span class="font-semibold">Sale Hours:</span>
-                {{ sale.saleTimespanHours }}
-              </p>
-              <p>
-                <span class="font-semibold">Sales Where:</span>
-                {{ sale.salesWhere ? sale.salesWhere : "Not specified" }}
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="Category6">
-        <h1 class="text-2xl font-semibold pb-10">Deal of the Day</h1>
-        <!-- Scrollable container for restaurant sales boxes -->
-        <div class="flex overflow-x-auto flex-shrink-0 h-96 w-full">
-          <div class="flex gap-4">
-            <div
-              v-for="sale in restaurantSales"
-              :key="sale.id"
-              class="SaleBox rounded-lg w-80"
-            >
-              <!-- Sale box content goes here -->
-              <h2 class="text-xl font-semibold">{{ sale.shopName }}</h2>
-              <img
-                :src="sale.url"
-                alt=""
-                class="w-full h-1/2 object-cover rounded-md"
-              />
-              <p>
-                <span class="font-semibold">Sale:</span>
-                {{ sale.saleDescriptionOrPercentage }} for
-                {{
-                  sale.saleProducts
-                    ? sale.saleProducts.join(", ")
-                    : "No products available"
-                }}
-              </p>
-              <p>
-                <span class="font-semibold">Address:</span>
-                {{ sale.address.street }},{{ sale.address.city }}
-              </p>
-              <p v-if="sale.saleTimespanDays && sale.saleTimespanHours">
-                <span class="font-semibold">Sale Days:</span>
-                {{ sale.saleTimespanDays.join(", ") }}
-              </p>
-
-              <p v-if="sale.saleTimespanDays && sale.saleTimespanHours">
-                <span class="font-semibold">Sale Hours:</span>
-                {{ sale.saleTimespanHours }}
-              </p>
-              <p>
-                <span class="font-semibold">Sales Where:</span>
-                {{ sale.salesWhere ? sale.salesWhere : "Not specified" }}
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-
       <!-- Add more sections as needed -->
     </div>
   </div>
 </template>
 
 <script setup>
+const salesList = [
+  "Featured Sales",
+  "Avaible Now!",
+  "Location Based Sales",
+  "Ends Soon!",
+  "Discount Percentage",
+  "Deal of the Day!",
+];
 const restaurantSales = [
   {
     id: 1,
