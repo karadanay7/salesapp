@@ -8,26 +8,31 @@
         }"
       >
         <template #header>
-          <h1 class="text-center">Login or Register</h1>
+          <div class="flex items-center justify-center relative">
+            <ULink @click="pushHome" class="absolute left-0 top-1">
+              <UIcon name="i-heroicons-arrow-left" size="24" />
+            </ULink>
+            <h1>Login</h1>
+          </div>
         </template>
         <div class="flex flex-col gap-4 items-center justify-center">
           <div>
             <UButton
               @click="login('google')"
               type="button"
-              size="md"
+              size="sm"
               class="flex items-center w-44 justify-center"
             >
-              <UIcon name="flat-color-icons:google" dynamic size="26" />
+              <UIcon name="flat-color-icons:google" dynamic size="20" />
               <span> Google</span>
             </UButton>
           </div>
           <div><h1>OR</h1></div>
-          <UContainer class="w-60">
+          <UContainer>
             <UForm
               :validate="validate"
               :state="state"
-              class="space-y-4 w-full"
+              class="space-y-4"
               @submit="onSubmit"
             >
               <UFormGroup label="Email" name="email">
@@ -95,7 +100,6 @@ async function signInWithEmail() {
 }
 
 async function onSubmit(event: FormSubmitEvent<any>) {
-  // Do something with data
   signInWithEmail();
 }
 
@@ -104,6 +108,9 @@ watchEffect(() => {
     return navigateTo("/");
   }
 });
+const pushHome = () => {
+  return navigateTo("/");
+};
 
 const login = async (_prov: any) => {
   const { data, error } = await client.auth.signInWithOAuth({

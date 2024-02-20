@@ -1,166 +1,232 @@
 <template>
   <Loading v-if="isLoading" />
-  <div class="min-h-screen flex flex-col items-center font-index p-8">
-    <h1 class="text-lg font-semibold">Registration</h1>
+  <UContainer class="flex justify-center items-center pt-10">
+    <UCard class="items-center justify-center w-full max-w-[700px]">
+      <template #header>
+        <h1 class="text-center">Store Registration</h1>
+      </template>
+      <UForm :validate="validateWithVuelidate" :state="form" @submit="onSubmit">
+        <div class="grid grid-cols-2 gap-7">
+          <div class="grid1 flex flex-col gap-2">
+            <UFormGroup label="Name-Surname" name="nameSurname">
+              <UInput
+                v-model="form.nameSurname"
+                name="NameSurname"
+                placeholder="Name Surname"
+              />
+            </UFormGroup>
 
-    <!-- Step 1: Company Information -->
-    <UForm
-      :schema="RegisterValidationSchema"
-      :state="formState"
-      class="w-full max-w-3xl rounded-md p-4"
-      @submit="handleFormSubmit"
-    >
-      <div class="grid grid-cols-2 gap-7">
-        <div class="grid1 flex flex-col gap-2">
-          <UFormGroup label="Name-Surname">
-            <UInput v-model="formState.nameSurname" name="NameSurname" />
-          </UFormGroup>
-
-          <UFormGroup label="E-mail">
-            <UInput v-model="formState.email" placeholder="E-mail" />
-          </UFormGroup>
-
-          <UFormGroup label="Company Type">
-            <USelect
-              v-model="companyType"
-              :options="companyTypes"
-              option-attribute="name"
-              placeholder="Company Type"
-            ></USelect>
-          </UFormGroup>
-          <UFormGroup label="ID/TAX Number">
-            <UInput
-              v-model="formState.idTaxNo"
-              type="number"
-              placeholder="ID/TAX number"
-            />
-          </UFormGroup>
-          <UFormGroup label="Company Trade Name ">
-            <UInput
-              v-model="formState.companyName"
-              placeholder="Company Trade Name"
-            />
-          </UFormGroup>
-          <UFormGroup label="City">
-            <USelect
-              @change="loadDistricts"
-              v-model="city"
-              :options="cities"
-              option-attribute="name"
-              value-attribute="id"
-              placeholder="City"
-            ></USelect
-          ></UFormGroup>
-        </div>
-        <div class="grid2 flex flex-col gap-2">
-          <UFormGroup label="District">
-            <USelect
-              v-model="selectedDistrict"
-              :options="districts"
-              option-attribute="name"
-              placeholder="Select District"
-            ></USelect
-          ></UFormGroup>
-          <UFormGroup label="Address Line ">
-            <UInput
-              v-model="formState.addressLine"
-              type="text"
-              placeholder="Address line"
-            />
-          </UFormGroup>
-          <UFormGroup label="Phone">
-            <UInput
-              v-model="formState.phone"
-              type="phone"
-              placeholder="05__ ___ __ __"
-            />
-          </UFormGroup>
-
-          <UFormGroup label="Category">
-            <USelect
-              v-model="formState.category"
-              :options="categories"
-              option-attribute="name"
-              placeholder="Select District"
-            ></USelect
-          ></UFormGroup>
-          <UFormGroup label="Password">
-            <UInput
-              v-model="formState.password"
-              type="password"
-              placeholder="Min 6 characters and min 1 number"
-            />
-          </UFormGroup>
-          <UFormGroup label="Confirm Password">
-            <UInput
-              v-model="formState.confirmPassword"
-              type="password"
-              name="password"
-              placeholder="Must be the same as password"
-            />
-          </UFormGroup>
-
-          <!-- Image Upload -->
-        </div>
-      </div>
-      <div
-        class="relative w-full h-52 border-2 border-dashed flex flex-col justify-center items-center overflow-hidden mt-4"
-      >
-        <div v-if="previewSrc" class="overflow-hidden flex flex-col">
-          <div>
-            <img
-              :src="previewSrc"
-              alt="Image Preview"
-              class="w-full h-full object-contain p-2"
-            />
+            <UFormGroup label="Company Type" name="companyType">
+              <USelect
+                v-model="form.companyType"
+                :options="companyTypes"
+                option-attribute="name"
+                placeholder="Company Type"
+              ></USelect>
+            </UFormGroup>
+            <UFormGroup label="ID/TAX Number" name="idTaxNo">
+              <UInput
+                v-model="form.idTaxNo"
+                type="text"
+                placeholder="ID/TAX number"
+              />
+            </UFormGroup>
+            <UFormGroup label="Company Trade Name " name="companyName">
+              <UInput
+                v-model="form.companyName"
+                placeholder="Company Trade Name"
+              />
+            </UFormGroup>
+            <UFormGroup label="City" name="city">
+              <USelect
+                @change="loadDistricts"
+                v-model="form.city"
+                :options="cities"
+                option-attribute="name"
+                value-attribute="id"
+                placeholder="City"
+              ></USelect
+            ></UFormGroup>
           </div>
-          <div>
-            <Icon
-              name="fa:close"
-              size="70"
-              class="text-red-500 absolute"
-              @click="handleFileChange"
-            />
+          <div class="grid2 flex flex-col gap-2">
+            <UFormGroup label="District" name="district">
+              <USelect
+                v-model="form.district"
+                :options="districts"
+                option-attribute="name"
+                placeholder="Select District"
+              ></USelect
+            ></UFormGroup>
+            <UFormGroup label="Address Line " name="addressLine">
+              <UInput
+                v-model="form.addressLine"
+                type="text"
+                placeholder="Address line"
+              />
+            </UFormGroup>
+            <UFormGroup label="Phone" name="phone">
+              <UInput
+                v-model="form.phone"
+                type="phone"
+                placeholder="05__ ___ __ __"
+              />
+            </UFormGroup>
+
+            <UFormGroup label="Category" name="category">
+              <USelect
+                v-model="form.category"
+                :options="categories"
+                option-attribute="name"
+                placeholder="Select District"
+              ></USelect
+            ></UFormGroup>
+
+            <!-- Image Upload -->
           </div>
         </div>
+
         <div
-          v-else
-          class="flex flex-col justify-center items-center w-full h-full"
+          class="relative w-full h-52 border-2 border-dashed flex flex-col justify-center items-center overflow-hidden mt-4"
         >
-          <h3 class="text-2xl">Add Store Image</h3>
-          <div>
-            <Icon class="" name="flat-color-icons:add-image" size="70" />
+          <div v-if="previewSrc" class="overflow-hidden flex flex-col">
+            <div>
+              <img
+                :src="previewSrc"
+                alt="Image Preview"
+                class="w-full h-full object-contain p-2"
+              />
+            </div>
+            <div>
+              <Icon
+                name="fa:close"
+                size="70"
+                class="text-red-500 absolute"
+                @click="handleFileChange"
+              />
+            </div>
           </div>
-          <h2 class="text-center text-xl mb-2">
-            Drop the image here, or
-            <span class="text-blue-500 cursor-pointer"> browse </span>
-          </h2>
+          <div
+            v-else
+            class="flex flex-col justify-center items-center w-full h-full"
+          >
+            <h3 class="text-xl">Add Store Image</h3>
+            <div>
+              <Icon class="" name="flat-color-icons:add-image" size="70" />
+            </div>
+            <h2 class="text-center text-lg mb-2">
+              Drop the image here, or
+              <span class="text-blue-500 cursor-pointer"> browse </span>
+            </h2>
 
-          <input
-            type="file"
-            accept="image/*"
-            @change="previewImage"
-            class="opacity-0 cursor-pointer absolute inset-0 w-full h-full"
-            ref="previewFileInput"
-          />
+            <input
+              type="file"
+              accept="image/*"
+              @change="previewImage"
+              class="opacity-0 cursor-pointer absolute inset-0 w-full h-full"
+              ref="previewFileInput"
+            />
+          </div>
         </div>
-      </div>
-      <div class="flex items-center justify-center pt-4">
-        <UButton type="submit" color="primary"> Apply & Get Password </UButton>
-      </div>
-    </UForm>
-  </div>
+        <div class="flex items-center justify-center pt-4">
+          <UButton type="submit" color="primary">
+            Apply & Get Password
+          </UButton>
+        </div>
+      </UForm></UCard
+    ></UContainer
+  >
 </template>
 
 <script setup lang="ts">
 import type { FormSubmitEvent } from "#ui/types";
 
+import useVuelidate from "@vuelidate/core";
+import {
+  helpers,
+  maxLength,
+  minLength,
+  numeric,
+  required,
+} from "@vuelidate/validators";
+const route = useRoute();
+const err = ref("");
 const supabase = useSupabaseClient();
+const user = useSupabaseUser();
 
-type Option = {
-  value: string;
-  label: string;
-};
+definePageMeta({ middleware: "auth" });
+watchEffect(() => {
+  if (route.fullPath == "/register" && !user.value) {
+    return navigateTo("/auth");
+  }
+});
+
+const form = reactive({
+  nameSurname: "",
+  companyType: "",
+  idTaxNo: "",
+  companyName: "",
+  city: "",
+  district: "",
+  addressLine: "",
+  phone: "",
+  category: "",
+  photo: "",
+});
+const v = useVuelidate(
+  {
+    nameSurname: {
+      required: helpers.withMessage("This field is required", required),
+      minLength: minLength(6),
+    },
+    companyType: {
+      required: helpers.withMessage("This field is required", required),
+    },
+    idTaxNo: {
+      required: helpers.withMessage("This field is required", required),
+      numeric: numeric,
+    },
+    companyName: {
+      required: helpers.withMessage("This field is required", required),
+      minLength: minLength(6),
+    },
+    city: {
+      required: helpers.withMessage("This field is required", required),
+    },
+    district: {
+      required: helpers.withMessage("This field is required", required),
+    },
+    addressLine: {
+      required: helpers.withMessage("This field is required", required),
+    },
+    phone: {
+      required: helpers.withMessage("This field is required", required),
+      numeric: numeric,
+      minLength: minLength(11),
+      maxLength: maxLength(11),
+    },
+    category: {
+      required: helpers.withMessage("This field is required", required),
+    },
+    photo: {
+      required: helpers.withMessage("This field is required", required),
+    },
+  },
+  form
+);
+function validateWithVuelidate() {
+  v.value.$touch();
+  return v.value.$errors.map((error) => ({
+    path: error.$propertyPath,
+    message: error.$message as string,
+  }));
+}
+
+defineExpose({
+  validate: async () => await v.value.validate(),
+});
+
+watch(form, validateWithVuelidate, { deep: true });
+
 type District = {
   area: number;
   id: number;
@@ -183,19 +249,6 @@ const latestPath = ref("");
 const companyType = ref("");
 const city = ref("");
 const selectedDistrict = ref("");
-const formState = reactive({
-  nameSurname: undefined,
-  companyName: undefined,
-
-  addressLine: undefined,
-  email: undefined,
-  category: undefined,
-  idTaxNo: undefined,
-
-  password: undefined,
-  confirmPassword: undefined,
-  phone: undefined,
-});
 
 const citiesResponse = await useFetch<{ data: (typeof Option)[] }>(
   "https://turkiyeapi.dev/api/v1/provinces"
@@ -230,12 +283,6 @@ const loadDistricts = async (evt: { target: { _value: any } }) => {
   }
 };
 
-watchEffect(async () => {
-  // Check if the user is already authenticated, if yes, redirect to home
-  if (useSupabaseUser().value) {
-    await navigateTo("/");
-  }
-});
 const companyTypes = [
   { id: 1, name: "Incorporated" },
   { id: 2, name: "Limited" },
@@ -317,11 +364,25 @@ const uploadImage = async (evt: { target: { files: FileList } }) => {
   }
 };
 
-// Return true if there are no errors, false otherwise
+const onRegister = async () => {
+  await useFetch("/api/prisma/register/", {
+    method: "POST",
+    body: {
+      nameSurname: form.nameSurname,
+      companyType: form.companyType,
+      idTaxNo: form.idTaxNo,
+      companyName: form.companyName,
+      city: form.city,
+      district: form.district,
+      addressLine: form.addressLine,
+      phone: form.phone,
+      category: form.category,
+      url: latestPath,
+    },
+  });
+};
 
-function handleFormSubmit(event: FormSubmitEvent<RegisterValidationSchema>) {
-  // Do something with data
-  console.log(event.data);
+async function onSubmit(event: FormSubmitEvent<any>) {
+  return navigateTo("/");
 }
-// Function to check if passwords match
 </script>

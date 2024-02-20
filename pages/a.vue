@@ -45,37 +45,7 @@
 </template>
 
 <script setup lang="ts">
-import type { FormSubmitEvent } from "@nuxt/ui/dist/runtime/types";
-import { z } from "zod";
 const supabase = useSupabaseClient();
-const RegisterValidationSchema = z
-  .object({
-    email: z.string().email("Invalid email"),
-    password: z
-      .string()
-      .regex(new RegExp(".*[A-Z].*"), "One uppercase character")
-      .regex(new RegExp(".*[a-z].*"), "One lowercase character")
-      .regex(new RegExp(".*\\d.*"), "One number")
-      .regex(
-        new RegExp(".*[`~<>?,./!@#$%^&*()\\-_+=\"'|{}\\[\\];:\\\\].*"),
-        "One special character"
-      )
-      .min(8, "Must be at least 8 characters in length"),
-    confirmPassword: z
-      .string()
-      .regex(new RegExp(".*[A-Z].*"), "One uppercase character")
-      .regex(new RegExp(".*[a-z].*"), "One lowercase character")
-      .regex(new RegExp(".*\\d.*"), "One number")
-      .regex(
-        new RegExp(".*[`~<>?,./!@#$%^&*()\\-_+=\"'|{}\\[\\];:\\\\].*"),
-        "One special character"
-      )
-      .min(8, "Must be at least 8 characters in length"),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords don't match",
-    path: ["confirmPassword"], // path of error
-  });
 
 const formState = ref({
   email: "",
@@ -85,11 +55,5 @@ const formState = ref({
 
 // Return true if there are no errors, false otherwise
 
-function handleFormSubmit(
-  event: FormSubmitEvent<z.output<typeof RegisterValidationSchema>>
-) {
-  // Do something with data
-  console.log(event.data);
-}
 // Function to check if passwords match
 </script>

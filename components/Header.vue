@@ -25,25 +25,63 @@
     <div class="hidden md:flex">
       <UHorizontalNavigation :links="horizontalLinks" />
     </div>
+
     <div
       v-if="isMenuOpen"
-      class="flex md:hidden top-8 absolute z-10 mx-auto left-0 right-0 border rounded-lg text-start bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-600 justify-center py-2 items-center"
+      class="flex flex-col md:hidden top-11 absolute z-10 mx-auto left-0 right-0 border rounded-lg text-start bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-600 justify-center py-2 items-center"
     >
+      <div class="absolute top-0 w-full flex justify-end items-center">
+        <NuxtLink
+          v-if="user"
+          @click="signOut()"
+          size="xs"
+          class="flex items-center w-full justify-end gap-1.5 text-sm text-primary p-2"
+        >
+          <Icon
+            name="i-heroicons-arrow-right-start-on-rectangle-20-solid"
+            class="text-primary"
+          />
+          Sign out
+        </NuxtLink>
+        <NuxtLink
+          v-if="!user"
+          @click="navigateAuth"
+          size="xs"
+          class="flex w-full items-center justify-end gap-1.5 text-sm text-primary p-2"
+        >
+          <Icon
+            name="i-heroicons-arrow-right-start-on-rectangle-20-solid"
+            class="text-primary"
+          />
+          Log in
+        </NuxtLink>
+      </div>
+
       <UVerticalNavigation :links="verticalLinks" />
     </div>
 
-    <div class="flex items-center">
-      <UButton
-        v-if="user"
-        @click="signOut()"
-        class="text-[13px] py-2 px-4 w-full hover:bg-gray-100 hover:text-orange-500"
+    <div class="flex items-center justify-center gap-2">
+      <ULink
+        v-if="!user"
+        @click="navigateAuth"
+        class="w-24 hidden md:flex items-center justify-center gap-1 text-sm hover:text-primary"
+        size="xs"
+        ><UIcon
+          name="i-heroicons-arrow-right-end-on-rectangle-20-solid"
+        />Login</ULink
       >
-        <Icon name="uil:signout" size="17" class="mb-1" />
+
+      <ULink
+        class="hidden md:flex w-24 items-center justify-center gap-1 text-sm hover:text-primary"
+        v-else
+        @click="signOut()"
+        size="xs"
+      >
+        <Icon name="i-heroicons-arrow-right-start-on-rectangle-20-solid" />
         Sign out
-      </UButton>
+      </ULink>
       <UToggle
-        :model-value="isDarkModeEnabled"
-        @update:model-value="setColorTheme"
+        v-model="isDark"
         on-icon="i-heroicons-moon"
         off-icon="i-heroicons-sun"
         size="lg"
@@ -67,18 +105,25 @@ const user = useSupabaseUser();
 const isMenuOpen = ref(false);
 const toggleMenu = () => (isMenuOpen.value = !isMenuOpen.value);
 
-const isDarkModeEnabled = ref<boolean>(false);
 const signOut = () => {
   supabase.auth.signOut();
   user.value = null;
 
   return navigateTo("/");
 };
-
-const setColorTheme = () => {
-  isDarkModeEnabled.value = !isDarkModeEnabled.value;
-  useColorMode().preference = isDarkModeEnabled.value ? "dark" : "light";
+const navigateAuth = () => {
+  return navigateTo("/auth");
 };
+
+const colorMode = useColorMode();
+const isDark = computed({
+  get() {
+    return colorMode.value === "dark";
+  },
+  set() {
+    colorMode.preference = colorMode.value === "dark" ? "light" : "dark";
+  },
+});
 const horizontalLinks = [
   [
     {
@@ -102,8 +147,13 @@ const horizontalLinks = [
       to: "/ending-soon",
     },
     {
-      label: "Register Your Store",
-      to: "/auth",
+      label: "Ending Soon!",
+      icon: "i-heroicons-bolt",
+      to: "/ending-soon",
+    },
+    {
+      label: "Register your Store",
+      to: "/register",
     },
   ],
 ];
@@ -130,8 +180,8 @@ const verticalLinks = [
       to: "/ending-soon",
     },
     {
-      label: "Register Your Store",
-      to: "/auth",
+      label: "Register your Store",
+      to: "/register",
     },
   ],
 ];
