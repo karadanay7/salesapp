@@ -101,6 +101,7 @@ async function signInWithEmail() {
 
 async function onSubmit(event: FormSubmitEvent<any>) {
   signInWithEmail();
+  navigateTo("/");
 }
 
 watchEffect(() => {

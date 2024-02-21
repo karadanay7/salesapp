@@ -5,20 +5,17 @@
       <template #header>
         <h1 class="text-center">Store Registration</h1>
       </template>
-      <UForm :validate="validateWithVuelidate" :state="form" @submit="onSubmit">
+      <UForm :validate="validateWithVuelidate" :state="form">
         <div class="grid grid-cols-2 gap-7">
           <div class="grid1 flex flex-col gap-2">
             <UFormGroup label="Name-Surname" name="nameSurname">
-              <UInput
-                v-model="form.nameSurname"
-                name="NameSurname"
-                placeholder="Name Surname"
-              />
+              <UInput v-model="form.nameSurname" placeholder="Name Surname" />
             </UFormGroup>
 
-            <UFormGroup label="Company Type" name="companyType">
+            <UFormGroup label="Company Type" name="companyTypeId">
               <USelect
-                v-model="form.companyType"
+                v-model="form.companyTypeId"
+                value-attribute="id"
                 :options="companyTypes"
                 option-attribute="name"
                 placeholder="Company Type"
@@ -72,11 +69,12 @@
               />
             </UFormGroup>
 
-            <UFormGroup label="Category" name="category">
+            <UFormGroup label="Category" name="categoryId">
               <USelect
-                v-model="form.category"
+                v-model="form.categoryId"
                 :options="categories"
                 option-attribute="name"
+                value-attribute="id"
                 placeholder="Select District"
               ></USelect
             ></UFormGroup>
@@ -88,12 +86,12 @@
         <div
           class="relative w-full h-52 border-2 border-dashed flex flex-col justify-center items-center overflow-hidden mt-4"
         >
-          <div v-if="previewSrc" class="overflow-hidden flex flex-col">
-            <div>
+          <div v-if="previewSrc" class="overflow-hidden">
+            <div class="w-full h-full flex justify-center items-center">
               <img
                 :src="previewSrc"
                 alt="Image Preview"
-                class="w-full h-full object-contain p-2"
+                class="max-w-full max-h-full"
               />
             </div>
             <div>
@@ -111,7 +109,11 @@
           >
             <h3 class="text-xl">Add Store Image</h3>
             <div>
-              <Icon class="" name="flat-color-icons:add-image" size="70" />
+              <Icon
+                class="text-primary"
+                name="flat-color-icons:add-image"
+                size="70"
+              />
             </div>
             <h2 class="text-center text-lg mb-2">
               Drop the image here, or
@@ -122,15 +124,21 @@
               type="file"
               accept="image/*"
               @change="previewImage"
-              class="opacity-0 cursor-pointer absolute inset-0 w-full h-full"
+              class="opacity-0 cursor-pointer absolute inset-0 w-full h-full object-contain"
               ref="previewFileInput"
+              required
+            />
+          </div>
+          <div v-if="previewSrc" class="absolute bottom-2 right-2">
+            <UButton
+              @click="handleFileChange"
+              icon="i-heroicons-x-mark-16-solid"
+              color="red"
             />
           </div>
         </div>
         <div class="flex items-center justify-center pt-4">
-          <UButton type="submit" color="primary">
-            Apply & Get Password
-          </UButton>
+          <UButton @click="onRegister" color="primary"> Register </UButton>
         </div>
       </UForm></UCard
     ></UContainer
@@ -138,8 +146,6 @@
 </template>
 
 <script setup lang="ts">
-import type { FormSubmitEvent } from "#ui/types";
-
 import useVuelidate from "@vuelidate/core";
 import {
   helpers,
@@ -153,6 +159,11 @@ const err = ref("");
 const supabase = useSupabaseClient();
 const user = useSupabaseUser();
 
+const categoriesResponse = await useFetch("/api/prisma/get-all-categories");
+const categories = categoriesResponse.data.value;
+const companyTypesResponse = await useFetch("/api/prisma/get-all-companyTypes");
+const companyTypes = companyTypesResponse.data.value;
+
 definePageMeta({ middleware: "auth" });
 watchEffect(() => {
   if (route.fullPath == "/register" && !user.value) {
@@ -162,15 +173,15 @@ watchEffect(() => {
 
 const form = reactive({
   nameSurname: "",
-  companyType: "",
+  companyTypeId: "",
   idTaxNo: "",
   companyName: "",
   city: "",
   district: "",
   addressLine: "",
   phone: "",
-  category: "",
-  photo: "",
+  categoryId: "",
+  url: "",
 });
 const v = useVuelidate(
   {
@@ -178,7 +189,7 @@ const v = useVuelidate(
       required: helpers.withMessage("This field is required", required),
       minLength: minLength(6),
     },
-    companyType: {
+    companyTypeId: {
       required: helpers.withMessage("This field is required", required),
     },
     idTaxNo: {
@@ -204,10 +215,10 @@ const v = useVuelidate(
       minLength: minLength(11),
       maxLength: maxLength(11),
     },
-    category: {
+    categoryId: {
       required: helpers.withMessage("This field is required", required),
     },
-    photo: {
+    url: {
       required: helpers.withMessage("This field is required", required),
     },
   },
@@ -246,9 +257,7 @@ const previewSrc = ref<string | ArrayBuffer | null>(null);
 const isLoading = ref(false);
 const files = ref<FileList | null>(null);
 const latestPath = ref("");
-const companyType = ref("");
 const city = ref("");
-const selectedDistrict = ref("");
 
 const citiesResponse = await useFetch<{ data: (typeof Option)[] }>(
   "https://turkiyeapi.dev/api/v1/provinces"
@@ -283,35 +292,6 @@ const loadDistricts = async (evt: { target: { _value: any } }) => {
   }
 };
 
-const companyTypes = [
-  { id: 1, name: "Incorporated" },
-  { id: 2, name: "Limited" },
-  { id: 3, name: "Sole Proprietorship" },
-  { id: 4, name: "Other" },
-];
-
-const categories = [
-  { id: 1, name: "Clothing" },
-  { id: 2, name: "Electronics" },
-  { id: 3, name: "Home and Furniture" },
-  { id: 4, name: "Books and Stationery" },
-  { id: 5, name: "Sports and Outdoors" },
-  { id: 6, name: "Coffee Shops" },
-  { id: 7, name: "Restaurants" },
-  { id: 8, name: "Spa & Massage" },
-  { id: 9, name: "Beauty" },
-  { id: 10, name: "Grocery Stores" },
-  { id: 11, name: "Toys and Games" },
-  { id: 12, name: "Jewelry and Accessories" },
-  { id: 13, name: "Automotive" },
-  { id: 14, name: "Pet Supplies" },
-  { id: 15, name: "Tech and Gadgets" },
-  { id: 16, name: "Health and Fitness" },
-  { id: 17, name: "Music and Instruments" },
-  { id: 18, name: "Arts and Crafts" },
-  { id: 19, name: "Baby and Kids" },
-  { id: 20, name: "Footwear" },
-];
 const previewImage = (evt: { target: { files: FileList } }) => {
   const file = evt.target.files[0];
   if (file) {
@@ -327,7 +307,7 @@ const previewImage = (evt: { target: { files: FileList } }) => {
 const handleFileChange = () => {
   previewSrc.value = null; // Reset previewSrc
 };
-const uploadImage = async (evt: { target: { files: FileList } }) => {
+const uploadImage = async () => {
   try {
     // Ensure files.value is not null
     if (!files.value) {
@@ -354,7 +334,6 @@ const uploadImage = async (evt: { target: { files: FileList } }) => {
     // Ensure response has a path property
     if (response?.path) {
       latestPath.value = response.path.toString(); // Assigning the latest path
-      console.log(response);
     } else {
       throw new Error("Uploaded file path not found");
     }
@@ -365,24 +344,26 @@ const uploadImage = async (evt: { target: { files: FileList } }) => {
 };
 
 const onRegister = async () => {
-  await useFetch("/api/prisma/register/", {
+  isLoading.value = true;
+  await uploadImage();
+  console.log(latestPath.value);
+  await $fetch("/api/prisma/add-store/", {
     method: "POST",
     body: {
+      userId: user.value?.id,
+      isApproved: false,
       nameSurname: form.nameSurname,
-      companyType: form.companyType,
+      companyTypeId: Number(form.companyTypeId),
       idTaxNo: form.idTaxNo,
       companyName: form.companyName,
       city: form.city,
       district: form.district,
       addressLine: form.addressLine,
       phone: form.phone,
-      category: form.category,
-      url: latestPath,
+      categoryId: Number(form.categoryId),
+      url: `https://fidxswxxskhebghmbomm.supabase.co/storage/v1/object/public/SaleSpot/${latestPath.value}`,
     },
   });
+  navigateTo("/");
 };
-
-async function onSubmit(event: FormSubmitEvent<any>) {
-  return navigateTo("/");
-}
 </script>

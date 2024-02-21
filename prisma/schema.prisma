@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -10,58 +7,52 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Shops {
-  id               Int         @id @default(autoincrement())
-  ownerName        String
-  ownerSurname     String
-  email            String      @unique
-  phoneNumber      String
-  password         String 
-  shopCategory     String
-  companyType      String
-  taxNumber        String      @unique
-  companyLocation  String
-  shopAddress      String
-  shopImageUrl     String?     // Optional shop image URL
-  created_at       DateTime    @default(now()) @db.Timestamptz(6)
-  sale             Sales[]
-  category         Categories? @relation(fields: [categoryId], references: [id])
-  categoryId       Int?
+// Store model representing stores registered by users
+model Store {
+  id            Int         @id @default(autoincrement())
+  userId        String      @db.Uuid
+  isApproved    Boolean     @default(false) // Whether the store is approved by admin
+  nameSurname   String      // Name of the store owner
+  companyType   CompanyType @relation(fields: [companyTypeId], references: [id]) // Relation with CompanyType
+  companyTypeId Int         // Foreign key referencing CompanyType
+  idTaxNo       String      @unique     // Tax identification number
+  phone         String      @unique     // Phone number of the store
+  companyName   String      // Name of the company
+  city          String      // City where the store is located
+  district      String      // District where the store is located
+  addressLine   String      // Address of the store
+  url           String      // Optional shop image URL
+  createdAt     DateTime    @default(now()) @db.Timestamptz(6)
+  sales         Sale[]      // One-to-many relationship: a store can have multiple sales
+  category      Category    @relation(fields: [categoryId], references: [id]) // Category of the store
+  categoryId    Int        // Foreign key referencing Category
 }
 
-model Sales {
-  id                Int      @id @default(autoincrement())
-  shopId            Int
-  shopName          String
-  saleDescription   String
-  salePercentage    Int      // If sale is percentage-based
-  saleProducts      String[]
-  shopAddress       String
-  saleTimespanDays  String[]
-  saleTimespanHours String
-  saleImageUrl      String
-  created_at        DateTime @default(now()) @db.Timestamptz(6)
-  shops             Shops[]
+// Sale model representing special offers in stores
+model Sale {
+  id              Int      @id @default(autoincrement())
+  store           Store    @relation(fields: [storeId], references: [id])
+  storeId         Int      // Foreign key referencing Store
+  name            String   // Name of the sale
+  description     String   // Description of the sale
+  percentage      Int?     // If sale is percentage-based
+  products        String[] // Array of product names on sale
+  timespanDays    String[] // Array of days when the sale is active
+  timespanHours   String   // Timespan when the sale is active
+  url             String   // URL for the sale
+  createdAt       DateTime @default(now()) @db.Timestamptz(6)
 }
 
-model ShopRegistrationRequests {
-  id               Int      @id @default(autoincrement())
-  shopId           Int?     // Reference to the Shop model if registration is approved
-  ownerName        String
-  ownerSurname     String
-  email            String   @unique
-  phoneNumber      String
-  shopCategory     String
-  companyType      String
-  taxNumber        String   @unique
-  companyLocation  String
-  shopAddress      String
-  shopImageUrl     String?  // Optional shop image URL
-  created_at       DateTime @default(now()) @db.Timestamptz(6)
+// Category model representing different categories of stores
+model Category {
+  id       Int      @id @default(autoincrement())
+  name     String   @unique
+  stores   Store[]  // One-to-many relationship: a category can have multiple stores
 }
 
-model Categories {
-  id        Int      @id @default(autoincrement())
-  name      String   @unique
-  shops     Shops[] // The opposite relation field in the Shops model
+// CompanyType model representing different types of companies
+model CompanyType {
+  id       Int      @id @default(autoincrement())
+  name     String   @unique
+  stores   Store[]  // One-to-many relationship: a company type can have multiple stores
 }

@@ -4,16 +4,22 @@ const prisma = new PrismaClient();
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
 
-  const product = await prisma.stores.create({
+  const store = await prisma.store.create({
     data: {
-      title: body.title,
-      description: body.description,
+      userId: body.userId,
+      isApproved: body.isApproved,
+      nameSurname: body.nameSurname,
+      companyTypeId: body.companyTypeId,
+      idTaxNo: body.idTaxNo,
+      companyName: body.companyName,
+      city: body.city,
+      district: body.district,
+      addressLine: body.addressLine,
+      phone: body.phone,
       categoryId: body.categoryId,
-      price: body.price,
-      image: body.image,
-      stockQuantity: body.stockQuantity,
+      url: body.url,
     },
   });
 
-  return product;
+  return store;
 });
