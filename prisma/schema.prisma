@@ -35,11 +35,12 @@ model Sale {
   storeId         Int      // Foreign key referencing Store
   name            String   // Name of the sale
   description     String   // Description of the sale
-  percentage      Int?     // If sale is percentage-based
+  percentage      Int     // If sale is percentage-based
   products        String[] // Array of product names on sale
-  timespanDays    String[] // Array of days when the sale is active
-  timespanHours   String   // Timespan when the sale is active
+  timespanStart   DateTime @db.Timestamptz(6)
+  timespanEnd     DateTime @db.Timestamptz(6)
   url             String   // URL for the sale
+  available       String[]
   createdAt       DateTime @default(now()) @db.Timestamptz(6)
 }
 

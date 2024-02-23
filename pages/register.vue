@@ -9,7 +9,11 @@
         <div class="grid grid-cols-2 gap-7">
           <div class="grid1 flex flex-col gap-2">
             <UFormGroup label="Name-Surname" name="nameSurname">
-              <UInput v-model="form.nameSurname" placeholder="Name Surname" />
+              <UInput
+                v-model="form.nameSurname"
+                name="NameSurname"
+                placeholder="Name Surname"
+              />
             </UFormGroup>
 
             <UFormGroup label="Company Type" name="companyTypeId">

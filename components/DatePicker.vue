@@ -36,6 +36,7 @@ const attrs = {
 
 <template>
   <VCalendarDatePicker
+    mode="dateTime"
     v-if="date && typeof date === 'object'"
     v-model.range="date"
     :columns="2"
