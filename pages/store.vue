@@ -14,7 +14,7 @@
           </h1>
         </div>
       </template>
-      <div class="flex items-center justify-between">
+      <div class="flex flex-col gap-4">
         <div>
           <UPopover :popper="{ placement: 'bottom-start' }">
             <UButton
@@ -130,9 +130,27 @@
             </UModal>
           </div>
         </div>
-      </div>
-      <div class="grid grid-cols-3">
-        <div v-for="(sale, i) in salesList"></div>
+        <div
+          class="flex gap-4 items-start flex-wrap justify-center md:justify-start"
+        >
+          <div v-for="sale in storeSales" :key="sale.id">
+            <Sale
+              :name="sale.name"
+              :description="sale.description"
+              :percentage="sale.percentage"
+              :products="sale.products"
+              :addressLine="store?.addressLine"
+              :timespanDays="
+                formatDateRange(sale.timespanStart, sale.timespanEnd)
+              "
+              :timespanHours="
+                formatHourRange(sale.timespanStart, sale.timespanEnd)
+              "
+              :available="sale.available"
+              :url="sale.url"
+            />
+          </div>
+        </div>
       </div>
     </UCard>
   </UContainer>
@@ -143,6 +161,7 @@ const user = useSupabaseUser();
 import useVuelidate from "@vuelidate/core";
 import {
   helpers,
+  maxLength,
   maxValue,
   minLength,
   minValue,
@@ -159,8 +178,17 @@ const descriptionOrPercentage = ["Description", "Percentage"];
 const { data: stores } = await useFetch("/api/prisma/get-all-stores");
 
 const store = computed(() =>
-  stores.value?.find((userId) => userId ?? "" === user.value?.id ?? "")
+  stores.value?.find((store) => store.userId === user.value?.id)
 );
+
+const { data: sales } = await useFetch("/api/prisma/get-all-sales");
+const storeSales = computed(() =>
+  (sales.value ?? []).filter(
+    (sale) =>
+      store.value?.id && sale.storeId && sale.storeId === store.value?.id
+  )
+);
+
 const image = store.value?.url;
 const status = store.value?.isApproved ? "Approved" : "Waiting";
 const { data: category } = await useFetch(
@@ -169,6 +197,16 @@ const { data: category } = await useFetch(
 const { data: companyType } = await useFetch(
   `/api/prisma/get-category-by-id/${store.value?.companyTypeId}`
 );
+const formatDateRange = (start, end) => {
+  const formattedStart = format(start, "d MMM");
+  const formattedEnd = format(end, "d MMM");
+  return `${formattedStart} - ${formattedEnd}`;
+};
+const formatHourRange = (start, end) => {
+  const formattedStart = format(start, "HH:mm");
+  const formattedEnd = format(end, "HH:mm");
+  return `${formattedStart} - ${formattedEnd}`;
+};
 
 const storeInfo = [
   { property: "Status", value: status },
@@ -207,6 +245,7 @@ const v = useVuelidate(
     name: {
       required: helpers.withMessage("This field is required", required),
       minLength: minLength(6),
+      maxLength: maxLength(27),
     },
     description: {
       requiredIf: helpers.withMessage(
@@ -245,8 +284,6 @@ defineExpose({
 });
 
 watch(form, validateWithVuelidate, { deep: true });
-
-const isFormValid = computed(() => !v.value.$invalid);
 
 // Date -time picker
 const selected = ref({ start: new Date(), end: add(new Date(), { days: 7 }) });
