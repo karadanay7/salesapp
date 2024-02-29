@@ -146,11 +146,7 @@ const horizontalLinks = [
       icon: "i-heroicons-bolt",
       to: "/ending-soon",
     },
-    {
-      label: "Ending Soon!",
-      icon: "i-heroicons-bolt",
-      to: "/ending-soon",
-    },
+
     {
       label: "Register your Store",
       to: "/register",

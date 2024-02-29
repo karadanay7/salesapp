@@ -1,6 +1,6 @@
 <template>
   <UCard class="w-56 sm:w-72 h-full dark:bg-gray-800">
-    <template #header class="bg-violet-300">
+    <template #header>
       <h2 class="text-base sm:text-lg font-semibold">{{ name }}</h2>
     </template>
     <div class="h-32 sm:h-44">
