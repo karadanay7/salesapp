@@ -18,7 +18,7 @@
         </p>
         <p>
           <span class="font-semibold">Address:</span>
-          {{ address.street }},{{ address.city }}
+          {{ addressLine }},{{ district }}
         </p>
         <p v-if="saleTimespanDays && saleTimespanHours">
           <span class="font-semibold">Sale Days:</span>
@@ -43,7 +43,8 @@ defineProps([
   "url",
   "saleDescriptionOrPercentage",
   "saleProducts",
-  "address",
+  "addressLine",
+  "district",
   "saleTimespanDays",
   "saleTimespanHours",
   "salesWhere",
