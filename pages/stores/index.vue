@@ -9,11 +9,13 @@
         }}</UBadge>
 
         <ul class="flex items-stretch gap-4 overflow-x-auto max-w-full py-3">
+         
           <li
             v-for="sale in restaurantSales"
             :key="sale.id"
             class="SaleBox p-2 rounded-lg"
           >
+          <ULink :to="`/stores/${store.id}`">
             <SaleC
               :shopName="sale.shopName"
               :saleDescriptionOrPercentage="sale.saleDescriptionOrPercentage"
@@ -24,7 +26,9 @@
               :salesWhere="sale.salesWhere"
               :url="sale.url"
             />
+            </ULink>
           </li>
+       
         </ul>
       </div>
       <!-- Add more sections as needed -->

@@ -99,16 +99,22 @@
       />
     </div>
   </div>
+  
 </template>
 <script setup lang="ts">
+import { debounce } from '@/utils/debounce';
+
 const supabase = useSupabaseClient();
 const user = useSupabaseUser();
 const isMenuOpen = ref(false);
 const toggleMenu = () => (isMenuOpen.value = !isMenuOpen.value);
 const userId = user.value?.id;
 
-const store = await useFetch(`/api/prisma/get-store-by-user-id/${userId}`);
+let isSearching = ref(false);
+let searchItem = ref("");
+let items = ref(null);
 
+const store = await useFetch(`/api/prisma/get-store-by-user-id/${userId}`);
 
 const signOut = () => {
   supabase.auth.signOut();
@@ -144,7 +150,7 @@ const horizontalLinks = [
     {
       label: "Stores",
       icon: "i-heroicons-building-storefront",
-      to: "/shops",
+      to: "/stores",
     },
     {
       label: "Ending Soon!",
@@ -173,7 +179,7 @@ const storeHorizontalLinks = [
   {
     label: 'Stores',
     icon: 'i-heroicons-building-storefront',
-    to: '/shops',
+    to: '/stores',
   },
   {
     label: 'Ending Soon!',
