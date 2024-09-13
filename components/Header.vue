@@ -14,7 +14,7 @@
       </ULink>
     </div>
     <div class="py-2">
-      <UButton @click="toggleMenu()" class="md:hidden">
+      <UButton @click="toggleMenu" class="md:hidden">
         <Icon
           :name="isMenuOpen ? 'pajamas:close' : 'pajamas:hamburger'"
           class="w-4 h-4 text-gray-300 dark:text-gray-900"
@@ -23,7 +23,7 @@
     </div>
 
     <div class="hidden md:flex">
-      <UHorizontalNavigation :links="horizontalLinks" />
+      <UHorizontalNavigation :links="store ? storeHorizontalLinks : horizontalLinks" />
     </div>
 
     <div
@@ -33,7 +33,7 @@
       <div class="absolute top-0 w-full flex justify-end items-center">
         <NuxtLink
           v-if="user"
-          @click="signOut()"
+          @click="signOut"
           size="xs"
           class="flex items-center w-full justify-end gap-1.5 text-sm text-primary p-2"
         >
@@ -57,7 +57,7 @@
         </NuxtLink>
       </div>
 
-      <UVerticalNavigation :links="verticalLinks" />
+      <UVerticalNavigation :links="store ? storeVerticalLinks : verticalLinks" />
     </div>
 
     <div class="flex items-center justify-center gap-2">
@@ -66,15 +66,16 @@
         @click="navigateAuth"
         class="w-24 hidden md:flex items-center justify-center gap-1 text-sm hover:text-primary"
         size="xs"
-        ><UIcon
+      >
+        <UIcon
           name="i-heroicons-arrow-right-end-on-rectangle-20-solid"
         />Login</ULink
       >
 
       <ULink
-        class="hidden md:flex w-24 items-center justify-center gap-1 text-sm hover:text-primary"
         v-else
-        @click="signOut()"
+        @click="signOut"
+        class="hidden md:flex w-24 items-center justify-center gap-1 text-sm hover:text-primary"
         size="xs"
       >
         <Icon name="i-heroicons-arrow-right-start-on-rectangle-20-solid" />
@@ -104,6 +105,10 @@ const supabase = useSupabaseClient();
 const user = useSupabaseUser();
 const isMenuOpen = ref(false);
 const toggleMenu = () => (isMenuOpen.value = !isMenuOpen.value);
+const userId = user.value?.id;
+
+const store = await useFetch(`/api/prisma/get-store-by-user-id/${userId}`);
+
 
 const signOut = () => {
   supabase.auth.signOut();
@@ -153,32 +158,35 @@ const horizontalLinks = [
     },
   ],
 ];
-const verticalLinks = [
-  [
-    {
-      label: "Home",
-      icon: "i-heroicons-home",
-      to: "/",
-    },
-    {
-      label: "Sales",
-      icon: "i-heroicons-arrow-trending-down",
-      to: "/sales",
-    },
-    {
-      label: "Stores",
-      icon: "i-heroicons-building-storefront",
-      to: "/shops",
-    },
-    {
-      label: "Ending Soon!",
-      icon: "i-heroicons-bolt",
-      to: "/ending-soon",
-    },
-    {
-      label: "Register your Store",
-      to: "/register",
-    },
-  ],
+const verticalLinks = [...horizontalLinks];
+const storeHorizontalLinks = [
+  {
+    label: 'Home',
+    icon: 'i-heroicons-home',
+    to: '/',
+  },
+  {
+    label: 'Sales',
+    icon: 'i-heroicons-arrow-trending-down',
+    to: '/sales',
+  },
+  {
+    label: 'Stores',
+    icon: 'i-heroicons-building-storefront',
+    to: '/shops',
+  },
+  {
+    label: 'Ending Soon!',
+    icon: 'i-heroicons-bolt',
+    to: '/ending-soon',
+  },
+  {
+    label: 'My Store',
+    icon: "i-heroicons-building-storefront",
+    to: '/store',
+  },
 ];
+
+const storeVerticalLinks = [...storeHorizontalLinks];
+
 </script>

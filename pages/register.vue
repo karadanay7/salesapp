@@ -335,7 +335,7 @@ const uploadImage = async () => {
       throw new Error(uploadError.message);
     }
 
-    // Ensure response has a path property
+
     if (response?.path) {
       latestPath.value = response.path.toString(); // Assigning the latest path
     } else {

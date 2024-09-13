@@ -1,8 +1,7 @@
 <template>
   <div class="h-full w-full font-index">
     <div class="SalesList container mx-auto flex flex-col gap-1 md:gap-5">
-      <!-- Restaurants section -->
-      <!-- Scrollable container for restaurant sales boxes -->
+  
       <div v-for="(category, i) in categoryList">
         <UBadge size="xl" :ui="{ rounded: 'rounded-lg' }" class="ml-2">{{
           category
@@ -27,7 +26,7 @@
           </li>
         </ul>
       </div>
-      <!-- Add more sections as needed -->
+ 
     </div>
   </div>
 </template>
