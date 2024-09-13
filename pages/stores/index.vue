@@ -15,7 +15,7 @@
             :key="sale.id"
             class="SaleBox p-2 rounded-lg"
           >
-          <ULink :to="`/stores/${store.id}`">
+          <ULink :to="`/stores/${sale.storeId}`">
             <SaleC
               :shopName="sale.shopName"
               :saleDescriptionOrPercentage="sale.saleDescriptionOrPercentage"
@@ -62,6 +62,7 @@ const restaurantSales = [
       country: "USA",
     },
     salesWhere: "On Getir",
+    storeId: 1,
   },
   {
     id: 2,
