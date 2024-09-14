@@ -14,10 +14,7 @@ export default defineEventHandler(async (event) => {
       store: {
         select: {
           companyName: true,
-      
           city: true,
-       state: true,
-          zip: true,
           district: true,
           street: true,
           addressLine: true,

@@ -1,8 +1,8 @@
 <template>
   <div class="h-full w-full font-index">
+    {{ restaurantSales }}
     <div class="SalesList container mx-auto flex flex-col gap-1 md:gap-5">
-      <!-- Restaurants section -->
-      <!-- Scrollable container for restaurant sales boxes -->
+    
       <div v-for="(category, i) in storesList">
         <UBadge size="xl" :ui="{ rounded: 'rounded-lg' }" class="ml-2">{{
           category
@@ -17,9 +17,8 @@
           >
           <ULink :to="`/stores/${sale.storeId}`">
             <SaleC
-              :shopName="sale.shopName"
-              :saleDescriptionOrPercentage="sale.saleDescriptionOrPercentage"
-              :saleProducts="sale.saleProducts"
+              :shopName="sale.companyName"
+              :saleDescriptionOrPercentage="sale.description || sale.discountPercentage"
               :addressLine="sale.addressLine"
               :district="sale.district"
               :saleTimespanDays="sale.saleTimespanDays"
@@ -32,6 +31,7 @@
        
         </ul>
       </div>
+
 
     </div>
   </div>
@@ -46,7 +46,8 @@ const storesList = [
   "Discount Percentage",
   "Deal of the Day!",
 ];
-const restaurantSales = useFetch("/api/prisma/get-restaurant-sales");
+const restaurantSalesResponse = await useFetch("/api/prisma/get-restaurant-sales");
+const restaurantSales = restaurantSalesResponse.data?.value?.sales;
 
 </script>
 
